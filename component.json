@@ -1,0 +1,13 @@
+{
+  "name": "ractive-menu",
+  "repository": "evs-chris/ractive-menu",
+  "description": "A dropdown menu component for ractive.",
+  "version": "0.0.1",
+  "dependencies": {
+    "ractivejs/ractive": "*"
+  },
+  "scripts": ["index.js"],
+  "styles": ["index.css"],
+  "main": "index.js",
+  "license": "MIT"
+}

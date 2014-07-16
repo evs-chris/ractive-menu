@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>ractive-menu Example</title>
+    <link rel="stylesheet" type="text/css" href="build/build.css" />
+  </head>
+  <body>
+    <div id="container"></div>
+    <script type="text/javascript" src="build/build.js"></script>
+    <script type="text/javascript">
+      setTimeout(function() {
+        var cmp = require('ractive-menu');
+
+        var ractive = new Ractive({
+          el: 'container', template: '<Menu children="{{ items }}" />', components: { 'Menu': cmp }
+        });
+        var items = [
+          { label: 'File', children: 
+            [
+              { label: 'New', children: [ { label: 'Text File' }, { label: 'Image' } ] },
+              { label: 'Save', action: function() { alert('saved'); } },
+              { type: 'separator' },
+              { label: 'Close', action: 'other action' }
+            ]
+          },
+          { label: 'Edit', children:
+            [
+              { label: 'Cut' },
+              { label: 'Copy' },
+              { label: 'Paste' },
+              { label: 'Preferences', children: [
+                { label: 'Edit' },
+                { label: 'Reset' }
+              ] }
+            ]
+          }
+        ];
+        setTimeout(function() { ractive.set('items', items); }, 500);
+        console.log('menu items in 500ms-ish');
+        ractive.findComponent('Menu').set('otherAction', function(v) { console.log(v); });
+      }, 500);
+    </script>
+  </body>
+</html>
