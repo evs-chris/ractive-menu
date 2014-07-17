@@ -28,6 +28,13 @@ function parents(el, arr) {
   return parents(el.parentNode, arr);
 }
 
+function closeExcept(except) {
+  var cls = this.get('openClass') || 'rm-open';
+  var opened = this.findAll('li.' + cls);
+  for (var i = 0; i < opened.length; i++) if (except.indexOf(opened[i]) === -1) opened[i].classList.remove(cls);
+  return cls;
+}
+
 var Menu = Ractive.extend({
   beforeInit: function(opts) {
   },
@@ -38,24 +45,29 @@ var Menu = Ractive.extend({
   data: {
     openClass: '',
     horizontal: true,
-    dropdown: true
+    dropdown: true,
+    closeOnClick: true
   },
   init: function() {
     var menu = this;
     menu.on('clicked', function(e) {
+      var close = menu.get('closeOnClick');
       var fn = e.context.action;
-      if (!!fn && typeof fn === 'function') fn();
+      if (!!fn && typeof fn === 'function') {
+        if (close) closeExcept.call(menu, []);
+        fn();
+      }
       else if (!!fn) {
         var other = menu.get('otherAction');
-        if (!!other && typeof other === 'function') other(fn);
+        if (!!other && typeof other === 'function') {
+          if (close) closeExcept.call(menu, []);
+          other(fn);
+        }
       }
       e.original.preventDefault();
     });
     menu.on('enter', function(e) {
-      var cls = menu.get('openClass') || 'rm-open';
-      var opened = menu.el.querySelectorAll('li.' + cls);
-      var above = parents(e.original.target);
-      for (var i = 0; i < opened.length; i++) if (above.indexOf(opened[i]) === -1) opened[i].classList.remove(cls);
+      var cls = closeExcept.call(menu, parents(e.original.target));
       positionLiChild(e);
       if (!!e.node.querySelector('ul')) {
         e.node.classList.add(cls);

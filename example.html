@@ -39,6 +39,7 @@
         setTimeout(function() { ractive.set('items', items); }, 500);
         console.log('menu items in 500ms-ish');
         ractive.findComponent('Menu').set('otherAction', function(v) { console.log(v); });
+        window.ractive = ractive;
       }, 500);
     </script>
   </body>
