@@ -1,0 +1,8 @@
+{
+  "name": "ractive-menu",
+  "type": "umd",
+  "version": "0.2.0",
+  "versions": [ "0.2.0" ],
+  "scripts": [ { "file": "ractive-menu.js", "target": "index.js" } ],
+  "styles": [ "assets/index.css" ]
+}
