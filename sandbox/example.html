@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>ractive-menu Example</title>
+    <link rel="stylesheet" type="text/css" href="/assets/index.css" />
+  </head>
+  <body>
+    <div id="container"></div>
+    <script type="text/javascript" src="/lib/ractive/index.js"></script>
+    <script type="text/javascript" src="/ractive-menu.js"></script>
+    <script type="text/javascript">
+      var ractive = new Ractive({
+        el: 'container',
+        template: '<Menu children="{{ items }}" otherAction="{{log}}" />',
+        components: { 'Menu': RactiveMenu['default'] },
+        data: {
+          log: function(v) { console.log(v); }
+        }
+      });
+      var items = [
+        { label: 'File', children:
+          [
+            { label: 'New', children: [ { label: 'Text File' }, { label: 'Image' } ], action: 'also clickable new' },
+            { label: 'Save', action: function() { alert('saved'); } },
+            { type: 'separator' },
+            { label: 'Close', action: 'other action - close' }
+          ]
+        },
+        { label: 'Edit', children:
+          [
+            { label: 'Cut', action: 'cut' },
+            { label: 'Copy', action: 'copy' },
+            { label: 'Paste', action: 'paste' },
+            { label: 'Preferences', children: [
+              { label: 'Edit', action: 'edit' },
+              { label: 'Reset', action: 'reset' }
+            ] }
+          ]
+        }
+      ];
+      setTimeout(function() { ractive.set('items', items); }, 500);
+      console.log('menu items in 500ms-ish');
+    </script>
+  </body>
+</html>

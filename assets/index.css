@@ -62,7 +62,7 @@ ul.ractive-menu li.rm-open > a {
   color: #000;
 }
 
-ul.ractive-menu li.actionable a {
+ul.ractive-menu li.actionable > a {
   font-weight: bold;
 }
 

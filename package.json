@@ -1,0 +1,7 @@
+{
+  "name": "ractive-menu",
+  "private": true,
+  "devDependencies": {
+    "gobble": "^0"
+  }
+}

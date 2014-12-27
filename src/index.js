@@ -1,4 +1,4 @@
-var Ractive = require('ractive');
+/* global Ractive */
 
 var windowOffset = function windowOffset(which, el) {
   var total = el['offset' + which];
@@ -36,11 +36,11 @@ function closeExcept(except) {
 }
 
 var Menu = Ractive.extend({
-  beforeInit: function(opts) {
-  },
   template: '<ul class="ractive-menu{{#horizontal}} horizontal{{/}}{{#dropdown}} dropdown{{/}}">{{#children}}{{>menu}}{{/}}</ul>',
   partials: {
-    menu: "{{#((.type || 'item') === 'item')}}<li on-mouseover='enter' on-mouseout='leave' class='{{#(.children.length > 0)}}with-children{{/}}{{#.position}} {{position}}{{/}}{{#(!!.action)}} actionable{{/}}'><a href='#' on-click='clicked'>{{.label}}</a>{{#(.children.length > 0)}}<ul>{{#.children}}{{>menu}}{{/}}</ul>{{/}}</li>{{else}}<li class='separator'></li>{{/}}"
+    menu: "{{>(.type || 'item')}}",
+    item: "<li on-mouseover='enter' on-mouseout='leave' class='{{#(.children.length > 0)}}with-children{{/}}{{#.position}} {{position}}{{/}}{{#(!!.action)}} actionable{{/}}'><a href='#' on-click='clicked'>{{.label}}</a>{{#(.children.length > 0)}}<ul>{{#.children}}{{>menu}}{{/}}</ul>{{/}}</li>",
+    separator: "<li class='separator'></li>"
   },
   data: {
     openClass: '',
@@ -48,7 +48,7 @@ var Menu = Ractive.extend({
     dropdown: true,
     closeOnClick: true
   },
-  init: function() {
+  onrender() {
     var menu = this;
     menu.on('clicked', function(e) {
       var close = menu.get('closeOnClick');
@@ -93,4 +93,4 @@ var Menu = Ractive.extend({
   }
 });
 
-module.exports = Menu;
+export default Menu;
