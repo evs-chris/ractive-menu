@@ -66,16 +66,21 @@ ul.ractive-menu li.actionable > a {
   font-weight: bold;
 }
 
-ul.ractive-menu.horizontal > li.with-children > a::after {
+ul.ractive-menu.horizontal > li.with-children > a::before {
   -webkit-transform: rotate(90deg);
   -ms-transform: rotate(90deg);
   -moz-transform: rotate(90deg);
   transform: rotate(90deg)
 }
 
-ul.ractive-menu li.with-children > a::after {
+ul.ractive-menu li.with-children > a::before {
   content: '\25b8';
-  margin-left: 0.5em;
+  right: 0.5em;
   display: inline-block;
   color: #aaa;
+  position: absolute;
+}
+
+ul.ractive-menu li.with-children > a {
+  margin-right: 0.5em;
 }

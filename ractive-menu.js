@@ -21,6 +21,7 @@
   "use strict";
   
   /* global Ractive */
+  /* jshint esnext: true */
   
   var index__windowOffset = function index__windowOffset(which, el) {
     var total = el["offset" + which];
@@ -34,7 +35,7 @@
       if (li.parentNode.parentNode.tagName !== "LI") {
         // hey... it's a top-level...
         ul.style.top = li.clientHeight + "px";
-        if (ul.clientWidth + li.offsetLeft > window.innerWidth) ul.style.left = (li.clientWidth - ul.clientWidth) + "px";else ul.style.left = "0px";
+        if (ul.clientWidth + li.offsetLeft > window.innerWidth) ul.style.left = (li.clientWidth - ul.clientWidth - 3) + "px";else ul.style.left = "0px";
       } else {
         // farther down
         ul.style.top = "0px";
@@ -45,14 +46,30 @@
   
   function index__parents(el, arr) {
     arr = arr || [];
-    if (el.tagName === "LI") arr.push(el);else if (el.tagName === "UL" && el.classList.contains("ractive-menu")) return arr;
+    if (el.tagName === "LI") arr.push(el);else if (el.tagName === "UL" && el.className.indexOf("ractive-menu") !== -1) return arr;
     return index__parents(el.parentNode, arr);
+  }
+  
+  function index__removeClass(el, cls) {
+    if (el.classList) {
+      el.classList.remove(cls);
+    } else {
+      el.setAttribute("class", el.className.replace(new RegExp("\\b" + cls + "\\b ?"), ""));
+    }
+  }
+  
+  function index__addClass(el, cls) {
+    if (el.classList) {
+      el.classList.add(cls);
+    } else {
+      el.setAttribute("class", el.className + " " + cls);
+    }
   }
   
   function index__closeExcept(except) {
     var cls = this.get("openClass") || "rm-open";
     var opened = this.findAll("li." + cls);
-    for (var i = 0; i < opened.length; i++) if (except.indexOf(opened[i]) === -1) opened[i].classList.remove(cls);
+    for (var i = 0; i < opened.length; i++) if (except.indexOf(opened[i]) === -1) index__removeClass(opened[i], cls);
     return cls;
   }
   
@@ -90,7 +107,7 @@
         var cls = index__closeExcept.call(menu, index__parents(e.original.target));
         index__positionLiChild(e);
         if (!!e.node.querySelector("ul")) {
-          e.node.classList.add(cls);
+          index__addClass(e.node, cls);
           if (!!e.node.timeout) {
             clearTimeout(e.node.timeout);
             delete e.node.timeout;
@@ -103,7 +120,7 @@
         }
         e.node.timeout = setTimeout(function () {
           var cls = menu.get("openClass") || "rm-open";
-          e.node.classList.remove(cls);
+          index__removeClass(e.node, cls);
           var ul = e.node.querySelector("ul");
           if (!!ul) {
             ul.style.top = ul.style.left = "";
