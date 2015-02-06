@@ -1,4 +1,5 @@
 /* global Ractive */
+/* jshint esnext: true */
 
 var windowOffset = function windowOffset(which, el) {
   var total = el['offset' + which];
@@ -11,7 +12,7 @@ function positionLiChild(e) {
   if (!!ul) {
     if (li.parentNode.parentNode.tagName !== 'LI') { // hey... it's a top-level...
       ul.style.top = li.clientHeight + 'px';
-      if (ul.clientWidth + li.offsetLeft > window.innerWidth) ul.style.left = (li.clientWidth - ul.clientWidth) + 'px';
+      if (ul.clientWidth + li.offsetLeft > window.innerWidth) ul.style.left = (li.clientWidth - ul.clientWidth - 3) + 'px';
       else ul.style.left = '0px';
     } else { // farther down
       ul.style.top = '0px';
@@ -24,14 +25,30 @@ function positionLiChild(e) {
 function parents(el, arr) {
   arr = arr || [];
   if (el.tagName === 'LI') arr.push(el);
-  else if (el.tagName === 'UL' && el.classList.contains('ractive-menu')) return arr;
+  else if (el.tagName === 'UL' && el.className.indexOf('ractive-menu') !== -1) return arr;
   return parents(el.parentNode, arr);
+}
+
+function removeClass(el, cls) {
+  if (el.classList) {
+    el.classList.remove(cls);
+  } else {
+    el.setAttribute('class', el.className.replace(new RegExp('\\b' + cls + '\\b ?'), ''));
+  }
+}
+
+function addClass(el, cls) {
+  if (el.classList) {
+    el.classList.add(cls);
+  } else {
+    el.setAttribute('class', el.className + ' ' + cls);
+  }
 }
 
 function closeExcept(except) {
   var cls = this.get('openClass') || 'rm-open';
   var opened = this.findAll('li.' + cls);
-  for (var i = 0; i < opened.length; i++) if (except.indexOf(opened[i]) === -1) opened[i].classList.remove(cls);
+  for (var i = 0; i < opened.length; i++) if (except.indexOf(opened[i]) === -1) removeClass(opened[i], cls);
   return cls;
 }
 
@@ -70,7 +87,7 @@ var Menu = Ractive.extend({
       var cls = closeExcept.call(menu, parents(e.original.target));
       positionLiChild(e);
       if (!!e.node.querySelector('ul')) {
-        e.node.classList.add(cls);
+        addClass(e.node, cls);
         if (!!e.node.timeout) {
           clearTimeout(e.node.timeout);
           delete e.node.timeout;
@@ -83,7 +100,7 @@ var Menu = Ractive.extend({
       }
       e.node.timeout = setTimeout(function() {
         var cls = menu.get('openClass') || 'rm-open';
-        e.node.classList.remove(cls);
+        removeClass(e.node, cls);
         var ul = e.node.querySelector('ul');
         if (!!ul) {
           ul.style.top = ul.style.left = '';
